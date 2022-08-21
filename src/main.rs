@@ -1,11 +1,8 @@
-use std::os::unix::process::parent_id;
+use chrono::{DateTime, NaiveDateTime, Utc};
 
-use chrono::{Date, DateTime, NaiveDateTime, TimeZone, Utc};
-use dotenv;
-use openai_api;
-use openai_api::api::{CompletionArgs, EngineInfo};
+use openai_api::api::CompletionArgs;
 use roux::{Me, Reddit, Subreddit};
-use tokio;
+
 use tokio_compat_02::FutureExt;
 
 async fn client() -> anyhow::Result<Me> {
@@ -27,7 +24,7 @@ async fn client() -> anyhow::Result<Me> {
 }
 
 async fn vaushify(msg: String) -> anyhow::Result<String> {
-    let base_prompt = include_str!("prompt.txt");
+    let base_prompt = include_str!("prompt.txt").trim_end_matches('\n');
     let openai_token = dotenv::var("openai_token")?;
     let prompt = format!("{base_prompt}\n\nNormal: {msg}\nVerbose");
     let args = CompletionArgs::builder()
@@ -44,9 +41,12 @@ async fn vaushify(msg: String) -> anyhow::Result<String> {
         .unwrap();
     let client = openai_api::Client::new(openai_token.as_ref());
     let completion = format!("{}", client.complete_prompt(args).compat().await?);
-    if completion.len() > 10 && completion.starts_with(": ") && !completion.contains("\n") {
-        let completion = completion[2..].to_string();
-        Ok(completion)
+    if let Some(completion) = completion.strip_prefix(": ") {
+        if completion.len() > 10 && !completion.contains('\n') {
+            Ok(completion.to_owned())
+        } else {
+            Err(anyhow::anyhow!("Completion invalid"))
+        }
     } else {
         Err(anyhow::anyhow!("No completion found"))
     }
@@ -54,9 +54,9 @@ async fn vaushify(msg: String) -> anyhow::Result<String> {
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
-    let client = client().await?;
+    let _client = client().await?;
     let subreddit = Subreddit::new("destiny");
-    let latest_comments = subreddit.latest_comments(Some(3), Some(250)).await?;
+    let _latest_comments = subreddit.latest_comments(Some(3), Some(250)).await?;
     /*for comment in latest_comments.data.children {
         if (true) {
             let _: () = comment.data.parent_id.unwrap();
@@ -77,7 +77,7 @@ async fn main() -> anyhow::Result<()> {
         );
         let current_time = Utc::now();
         let time_since_post_creation = current_time.signed_duration_since(post_time);
-        if post.data.stickied.clone() == false && time_since_post_creation.num_hours() < 4 {
+        if !post.data.stickied && time_since_post_creation.num_hours() < 4 {
             let article_id = post.data.id.clone();
             let comments = subreddit
                 .article_comments(&article_id, None, Some(250))
@@ -93,13 +93,13 @@ async fn main() -> anyhow::Result<()> {
                 let body = comment.body.clone().unwrap();
                 let body = html_escape::decode_html_entities(&body).to_string();
                 if comment.ups.unwrap() > 10
-                    && body.split(" ").count() > 8
-                    && body.split(" ").count() < 20
-                    && !body.contains("\n")
+                    && body.split(' ').count() > 8
+                    && body.split(' ').count() < 20
+                    && !body.contains('\n')
                 {
                     println!(
                         "    +{:?}: {:?} https://reddit.com{}",
-                        comment.ups.clone().unwrap(),
+                        comment.ups.unwrap(),
                         body,
                         comment.permalink.clone().unwrap()
                     );
@@ -108,7 +108,7 @@ async fn main() -> anyhow::Result<()> {
                     return Ok(());
                 }
             }
-            println!("");
+            println!();
         }
     }
 

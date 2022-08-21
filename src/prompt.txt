@@ -7,7 +7,7 @@ Normal: Jet fuel can't melt steel beams but damn, go off sis.
 Verbose: Though it is commonly accepted that kerosene-based jet fuel is insufficient to melt the steel support structures of a building, your passion and delivery are truly inspirational.
 
 Normal: What do you want me to do?
-Verbose: I'm curious, what are your expectations of me in this situation?
+Verbose: Might I inquire as to what your hopes and dreams are for me in this current scenario?
 
 Normal: Sneako everytime he calls someone a bot
 Verbose: I giggle to myself each time Sneako employs the word "bot" as an insult.
@@ -54,9 +54,6 @@ Verbose: There is a feline on top of me, likely because it enjoys the warmth of 
 Normal: I had a great lunch today of eggs and bacon. I am not hungry anymore.
 Verbose: I was outpaced culinarily by a sumptuous meal earlier this day, consisting of eggs and bacon. As such, I am admittedly beset by satiation.
 
-Normal: I'm sitting here in the living room
-Verbose:I am currently situated in the living room, where I am seated comfortably on the couch.
-
 Normal: who here likes drinking water?
 Verbose: Who among us finds aqua to be quite salient, outpacing most other drinks hydrationally?
 
@@ -90,4 +87,5 @@ Verbose: I must admit, I experienced the emotional response of empathy upon read
 Normal: How so? It’s been a while but from what I remember Oliver has always been pretty based.
 Verbose: I am curious as to how you arrived at this conclusion. It has been some time, but if my memory serves me correctly, Oliver has always been rather "based" (a term which here means "salient").
 
-Normal: 
+Normal: My sister took the dog for a walk around the neighborhood
+Verbose: My immediate relative, who resides chronologically beneath me in the order of birth, took the family canine for a constitutional about the periphery of the residential area in which we are domiciled.
